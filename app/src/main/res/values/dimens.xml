@@ -1,0 +1,16 @@
+<resources>
+
+    <dimen name="rhythmTriple">96dp</dimen>
+    <dimen name="rhythmDouble">64dp</dimen>
+    <dimen name="rhythmDoubleAndAQuarter">72dp</dimen>
+    <dimen name="rhythmOneAndAHalf">48dp</dimen>
+    <dimen name="rhythmOneAndAQuarter">40dp</dimen>
+    <dimen name="rhythmOneAndThreeQuarters">56dp</dimen>
+    <dimen name="rhythm">32dp</dimen>
+    <dimen name="rhythmHalf">16dp</dimen>
+    <dimen name="rhythmThreeQuarters">24dp</dimen>
+    <dimen name="rhythmQuarter">8dp</dimen>
+    <dimen name="rhythmEighth">4dp</dimen>
+    <dimen name="rhythmSixteenth">2dp</dimen>
+    ​
+</resources>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+    <LinearLayout
+            android:id="@+id/dataContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/rhythm">
+
+        <TextView
+                android:id="@+id/nameTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Hans Solo" />
+
+        <TextView
+                android:id="@+id/heightTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Sex: Male" />
+
+        <TextView
+                android:id="@+id/birthdayTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="DoB: 17 nov 1892" />
+
+        <TextView
+                android:id="@+id/bmiTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="BMI: 1.03" />
+
+        <TextView
+                android:id="@+id/planetTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/rhythmHalf"
+                tools:text="Home Planet: Tattooine" />
+
+        <TextView
+                android:id="@+id/planetClimateTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Home Planet Climate: Dry" />
+
+        <TextView
+                android:id="@+id/planetTerrainTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Home Planet Terrain: Rocky" />
+
+        <TextView
+                android:id="@+id/planetGravityTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Home Planet Gravity: 9.1" />
+
+        <TextView
+                android:id="@+id/planetPopulationTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Home Planet Population: 1000000" />
+
+        <TextView
+                android:id="@+id/filmsTextView"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/rhythmHalf"
+                tools:text="Films: A New Hope (1999), Return of the Jedi (1989), The Empire Strikes Back (1991)" />
+
+    </LinearLayout>
+
+    <ProgressBar
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/errorText"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Something went wrong"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+    <Button
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/errorText"
+            app:layout_constraintStart_toStartOf="@id/errorText"
+            app:layout_constraintTop_toBottomOf="@id/errorText" />
+</androidx.constraintlayout.widget.ConstraintLayout>
