@@ -4,9 +4,11 @@ import com.playground.starwars.model.PeopleResponse
 import com.playground.starwars.model.Film
 import com.playground.starwars.model.Person
 import com.playground.starwars.model.Planet
+import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
+import kotlin.random.Random
 
 val dummyPerson = Person(
     "Luke SkyWalker",
@@ -44,7 +46,7 @@ val dummyFilm6 = Film("http://swapi.dev/api/films/6", "Revenge of the Sith", "19
 
 val responseErrorBody = "".toResponseBody("text/plain".toMediaTypeOrNull())
 
-class InMemoryDummyStarWarsApi : StarWarsApi {
+class FakeStarWarsApi : StarWarsApi {
     override suspend fun getPeople(page: Int): Response<PeopleResponse> {
         return Response.success(
             PeopleResponse(
@@ -62,7 +64,7 @@ class InMemoryDummyStarWarsApi : StarWarsApi {
             else -> Response.error(404, "".toResponseBody("application/json".toMediaTypeOrNull()))
         }
 
-    private var shouldError = true
+    private var shouldError = false
     override suspend fun getPlanet(id: Int): Response<Planet> {
         shouldError = !shouldError
         return if (shouldError)
@@ -75,6 +77,7 @@ class InMemoryDummyStarWarsApi : StarWarsApi {
     }
 
     override suspend fun getFilm(id: Int): Response<Film> {
+        delay(Random.nextLong(2000, 10000))
         val film = when (id) {
             1 -> dummyFilm
             2 -> dummyFilm2

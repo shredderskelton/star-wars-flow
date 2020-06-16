@@ -41,5 +41,8 @@ class PeopleFragment : Fragment(R.layout.fragment_people) {
         bind(people) {
             adapter.items = it
         }
+        bind(isLoading) {
+            adapter.isLoading = it
+        }
     }
 }

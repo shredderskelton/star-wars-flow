@@ -10,9 +10,8 @@ import com.playground.starwars.ui.DispatcherProvider
 import com.playground.starwars.ui.StarWarsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.scanReduce
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.flow.*
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -22,12 +21,13 @@ class PeopleViewModel(
     dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider()
 ) : StarWarsViewModel(application, dispatcherProvider) {
 
+    private val isLoadingRelay = BroadcastChannel<Boolean>(1)
+
     val people =
         starWars.getPeople()
             .filterIsInstance<Result.Success<List<Person>>>() // not handling errors!
             .map { result ->
                 result.data
-                    .sortedBy { it.name }
                     .map { person ->
                         SimpleListItem(
                             person.id,
@@ -37,4 +37,10 @@ class PeopleViewModel(
                     }
             }
             .scanReduce { accumulator, value -> (accumulator + value).sortedBy { it.id } }
+            .onStart {
+                isLoadingRelay.send(true)
+            }
+            .onCompletion { isLoadingRelay.send(false) }
+
+    val isLoading = isLoadingRelay.asFlow()
 }

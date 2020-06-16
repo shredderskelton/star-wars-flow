@@ -18,7 +18,6 @@ class HttpStarWarsService(
 ) : StarWarsService, Loggable {
 
     override fun getPeople(): Flow<Result<List<Person>>> = flow {
-        emit(Result.Loading)
         var page = 1
         var cont = true
         emit(Result.Success(emptyList()))
@@ -39,21 +38,18 @@ class HttpStarWarsService(
 
     override fun getPerson(id: Int): Flow<Result<Person>> = flow {
         logDebug { "getPerson: $id" }
-        emit(Result.Loading)
         delay(DELAY)
         emit(starWarsApi.getPerson(id).dataOrError())
     }.flowOn(Dispatchers.IO)
 
     override fun getPlanet(id: Int): Flow<Result<Planet>> = flow {
         logDebug { "getPlanet: $id" }
-        emit(Result.Loading)
         delay(DELAY)
         emit(starWarsApi.getPlanet(id).dataOrError())
     }.flowOn(Dispatchers.IO)
 
     override fun getFilm(id: Int): Flow<Result<Film>> = flow {
         logDebug { "getFilm: $id" }
-        emit(Result.Loading)
         delay(DELAY)
         emit(starWarsApi.getFilm(id).dataOrError())
     }.flowOn(Dispatchers.IO)

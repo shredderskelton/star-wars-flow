@@ -3,7 +3,7 @@ package com.playground.starwars
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager 
+import androidx.fragment.app.FragmentManager
 import com.playground.starwars.ui.people.PeopleFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -29,6 +29,12 @@ class MainActivity : AppCompatActivity() {
 
 fun FragmentManager.pushFragment(fragment: Fragment) =
     beginTransaction()
-        .replace(R.id.container, fragment)
-        .addToBackStack(null)
+        .setCustomAnimations(
+            R.anim.enter_from_right,
+            R.anim.exit_to_left,
+            R.anim.enter_from_left,
+            R.anim.exit_to_right
+        )
+        .add(R.id.container, fragment)
+        .addToBackStack(fragment::class.java.simpleName)
         .commit()

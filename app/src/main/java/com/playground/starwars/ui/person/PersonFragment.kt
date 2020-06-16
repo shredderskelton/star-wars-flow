@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.playground.starwars.R
+import com.playground.starwars.ui.FragmentArgumentDelegate
 import kotlinx.android.synthetic.main.fragment_person.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -15,25 +16,15 @@ import kotlinx.coroutines.flow.FlowCollector
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-
 @FlowPreview
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 class PersonFragment : Fragment(R.layout.fragment_person) {
     companion object {
-        private const val ARG_PERSON_ID = "ARG_ID"
-        fun newInstance(personId: Int): PersonFragment {
-            return PersonFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_PERSON_ID, personId)
-                }
-            }
-        }
+        fun newInstance(personId: Int) = PersonFragment().apply { personIdArg = personId }
     }
 
-    private val personIdArg by lazy {
-        arguments!!.getInt(ARG_PERSON_ID, 0)
-    }
+    private var personIdArg by FragmentArgumentDelegate<Int>()
 
     private val viewModel by viewModel<PersonViewModel> { parametersOf(personIdArg) }
 
@@ -42,6 +33,9 @@ class PersonFragment : Fragment(R.layout.fragment_person) {
         viewModel.bindViewModel()
         retryButton.setOnClickListener {
             viewModel.refresh()
+        }
+        backButton.setOnClickListener {
+            parentFragmentManager.popBackStack()
         }
     }
 

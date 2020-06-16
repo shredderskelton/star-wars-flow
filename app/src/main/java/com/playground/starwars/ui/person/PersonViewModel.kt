@@ -13,6 +13,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.*
 
+@ExperimentalStdlibApi
 @FlowPreview
 @ExperimentalCoroutinesApi
 class PersonViewModel(
@@ -30,41 +31,52 @@ class PersonViewModel(
             starWars.getPerson(personId)
                 .flatMapConcat { personResult ->
                     when (personResult) {
-                        Result.Loading -> flowOf(State(isLoading = true))
                         is Result.Error -> flowOf(State(isLoading = false, isError = true))
-                        is Result.Success -> getDataFor(personResult.data)
+                        is Result.Success -> personDetailsFlow(personResult.data)
                     }
                 }
-        }
-            .broadcastIn(viewModelScope)
+                .onStart { emit(State(isLoading = true)) }
+        }.broadcastIn(viewModelScope)
             .asFlow()
 
-    private fun getDataFor(person: Person): Flow<State> =
+    private fun personDetailsFlow(person: Person): Flow<State> =
         combine(
             starWars.getPlanet(person.planetId),
-            createFilm(person)
+            filmsFlow(person)
         ) { planetResult, films ->
             when (planetResult) {
-                Result.Loading -> State(person, null, films, isLoading = true)
                 is Result.Error -> State(person, null, films, isError = true)
                 is Result.Success -> State(person, planetResult.data, films)
             }
-        }
+        }.onStart { emit(State(person = person, isLoading = true)) }
 
-    private fun createFilm(person: Person): Flow<String> =
-        person.filmIds.asFlow()
-            .flatMapConcat { filmId ->
+    @ExperimentalStdlibApi
+    private fun filmsFlow(person: Person): Flow<String> =
+        person.filmIds
+            .asFlow()
+            .flatMapMerge { filmId ->
                 starWars.getFilm(filmId)
                     .map { filmResult ->
-                        when (filmResult) {
-                            is Result.Success -> filmResult.data.toFilmString()
-                            is Result.Error -> "Error loading Film ID: $filmId"
-                            Result.Loading -> null
+                        val result: Pair<Int, String> = when (filmResult) {
+                            is Result.Success -> filmId to filmResult.data.toFilmString()
+                            is Result.Error -> filmId to "Error loading Film ID: $filmId"
                         }
+                        result
                     }
-                    .mapNotNull { it }
+                    .onStart { emit(filmId to "\nLoading...") }
             }
-            .scanReduce { accumulator, value -> "$accumulator, $value" }
+            .scan(mutableMapOf<Int, String>()) { acc, it ->
+                acc[it.first] = it.second
+                acc
+            }
+            .map { entry ->
+                entry.map { it.value }
+                    .scanReduce { acc, s ->
+                        "$acc, $s"
+                    }
+                    .lastOrNull()
+            }
+            .mapNotNull { it }
             .onStart { emit("Loading") }
 
     fun refresh() = launchCoroutine {

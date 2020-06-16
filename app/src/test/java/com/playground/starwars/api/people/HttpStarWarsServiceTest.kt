@@ -1,15 +1,12 @@
 package com.playground.starwars.api.people
 
 
-import com.nhaarman.mockitokotlin2.mock
-import com.playground.starwars.model.Person
 import com.playground.starwars.service.HttpStarWarsService
 import com.playground.starwars.service.Result
-import com.playground.starwars.service.api.InMemoryDummyStarWarsApi
+import com.playground.starwars.service.api.FakeStarWarsApi
 import com.playground.starwars.service.api.StarWarsApi
 import com.playground.starwars.service.api.dummyPerson
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
@@ -21,7 +18,7 @@ class HttpStarWarsServiceTest {
 
     private lateinit var underTest: HttpStarWarsService
 
-    private val api: StarWarsApi = InMemoryDummyStarWarsApi()
+    private val api: StarWarsApi = FakeStarWarsApi()
 
     @Test
     fun `when started loading is returned`() {
