@@ -15,7 +15,6 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-@ExperimentalStdlibApi
 val apiModule = module {
     factory { androidContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager }
     single {
