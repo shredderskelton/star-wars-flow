@@ -20,7 +20,7 @@ open class StarWarsViewModel(
         }
 
     fun launchCoroutine(block: suspend CoroutineScope.() -> Unit): Job =
-        viewModelScope.launch(context = handler + dispatcherProvider.io(), block = block)
+        viewModelScope.launch(context = handler + dispatcherProvider.main(), block = block)
 }
 
 interface DispatcherProvider {

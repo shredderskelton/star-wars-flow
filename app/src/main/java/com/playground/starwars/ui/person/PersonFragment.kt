@@ -13,19 +13,19 @@ import kotlinx.android.synthetic.main.fragment_person.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-@InternalCoroutinesApi
+@ExperimentalStdlibApi
 class PersonFragment : Fragment(R.layout.fragment_person) {
     companion object {
         fun newInstance(personId: Int) = PersonFragment().apply { personIdArg = personId }
     }
 
     private var personIdArg by FragmentArgumentDelegate<Int>()
-
     private val viewModel by viewModel<PersonViewModel> { parametersOf(personIdArg) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,27 +68,22 @@ class PersonFragment : Fragment(R.layout.fragment_person) {
     }
 }
 
-fun Fragment.launchCoroutine(block: suspend CoroutineScope.() -> Unit): Job {
-    val handler =
-        CoroutineExceptionHandler { _, exception ->
-            Log.e("Fragment", "Unhandled Exception: $exception")
-            throw exception
-        }
 
+val handler =
+    CoroutineExceptionHandler { _, exception ->
+        Log.e("Fragment", "Unhandled Exception: $exception")
+        throw exception
+    }
+
+fun Fragment.launchCoroutine(block: suspend CoroutineScope.() -> Unit): Job {
     return lifecycleScope.launch(context = handler, block = block)
 }
 
-@InternalCoroutinesApi
 fun <T> Fragment.bind(property: Flow<T>, block: (T) -> Unit) {
     launchCoroutine {
-        property.collect(object : FlowCollector<T> {
-            override suspend fun emit(value: T) {
-                block(value)
-            }
-        })
+        property.collectLatest { block(it) }
     }
 }
 
-@InternalCoroutinesApi
 fun Fragment.bindToTextView(property: Flow<String>, textView: TextView) =
     bind(property) { textView.text = it }
