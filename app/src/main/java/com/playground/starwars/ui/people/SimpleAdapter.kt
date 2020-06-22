@@ -25,8 +25,8 @@ class SimpleAdapter(private val onItemClicked: (Int) -> Unit) :
     var items: List<SimpleListItem> = emptyList()
         set(value) {
             val diffResult = DiffCallback(
-                field,
-                value
+                old = field,
+                new = value
             ).let(DiffUtil::calculateDiff)
             field = value
             diffResult.dispatchUpdatesTo(this)

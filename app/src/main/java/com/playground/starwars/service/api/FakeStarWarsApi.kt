@@ -11,14 +11,14 @@ import retrofit2.Response
 import kotlin.random.Random
 
 val dummyPerson = Person(
-    "Luke SkyWalker",
-    "12",
-    "http://swapi.dev/api/people/1/",
-    "male",
-    "12",
-    "http://swapi.dev/api/planets/2/",
-    "1981",
-    listOf(
+    name = "Luke SkyWalker",
+    height = "12",
+    url = "http://swapi.dev/api/people/1/",
+    gender = "male",
+    mass = "12",
+    homeworld = "http://swapi.dev/api/planets/2/",
+    birth_year = "1981",
+    films = listOf(
         "http://swapi.dev/api/films/1",
         "http://swapi.dev/api/films/2",
         "http://swapi.dev/api/films/3",

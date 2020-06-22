@@ -30,16 +30,14 @@ class PeopleViewModel(
                 result.data
                     .map { person ->
                         SimpleListItem(
-                            person.id,
-                            person.name,
-                            person.gender
+                            id = person.id,
+                            title = person.name,
+                            subtitle = person.gender
                         )
                     }
             }
-            .scanReduce { accumulator, value -> (accumulator + value).sortedBy { it.id } }
-            .onStart {
-                isLoadingRelay.send(true)
-            }
+            .scanReduce { accumulator, value -> (accumulator + value) }
+            .onStart { isLoadingRelay.send(true) }
             .onCompletion { isLoadingRelay.send(false) }
 
     val isLoading = isLoadingRelay.asFlow()

@@ -42,6 +42,13 @@ class HttpStarWarsService(
         emit(starWarsApi.getPerson(id).dataOrError())
     }.flowOn(Dispatchers.IO)
 
+    private fun <T : Any> Response<T>.dataOrError(): Result<T> =
+        if (isSuccessful) {
+            val data = body()
+            if (data != null) Result.Success(data)
+            else Result.Error(Exception("Not found"))
+        } else Result.Error(Exception("Request failed"))
+
     override fun getPlanet(id: Int): Flow<Result<Planet>> = flow {
         logDebug { "getPlanet: $id" }
         delay(DELAY)
@@ -54,12 +61,4 @@ class HttpStarWarsService(
         emit(starWarsApi.getFilm(id).dataOrError())
     }.flowOn(Dispatchers.IO)
 
-    private fun <T : Any> Response<T>.dataOrError(): Result<T> =
-        if (isSuccessful) {
-            val data = body()
-            if (data != null) Result.Success(
-                data
-            )
-            else Result.Error(Exception("Not found"))
-        } else Result.Error(Exception("Request failed"))
 }
