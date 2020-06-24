@@ -12,8 +12,8 @@ import kotlinx.android.synthetic.main.layout_simple_item.view.*
 private const val NORMAL = 1
 private const val LOADING = 2
 
-class SimpleAdapter(private val onItemClicked: (Int) -> Unit) :
-    RecyclerView.Adapter<SimpleAdapter.SimpleViewHolder>() {
+class PageLoadingAdapter(private val onItemClicked: (Int) -> Unit) :
+    RecyclerView.Adapter<PageLoadingAdapter.SimpleViewHolder>() {
 
     var isLoading: Boolean = true
         set(value) {

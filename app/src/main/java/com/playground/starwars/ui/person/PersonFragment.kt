@@ -17,9 +17,6 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-@ExperimentalStdlibApi
 class PersonFragment : Fragment(R.layout.fragment_person) {
     companion object {
         fun newInstance(personId: Int) = PersonFragment().apply { personIdArg = personId }

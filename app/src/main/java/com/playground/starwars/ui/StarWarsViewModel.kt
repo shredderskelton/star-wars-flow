@@ -2,22 +2,15 @@ package com.playground.starwars.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.playground.starwars.service.Loggable
 import com.playground.starwars.service.logDebug
+import com.playground.starwars.ui.person.handler
 import kotlinx.coroutines.*
 
-open class StarWarsViewModel(
-    application: Application,
-    private val dispatcherProvider: DispatcherProvider
-) : AndroidViewModel(application),
+open class StarWarsViewModel(private val dispatcherProvider: DispatcherProvider) : ViewModel(),
     Loggable {
-
-    private val handler =
-        CoroutineExceptionHandler { _, exception ->
-            logDebug { "Unhandled Exception: $exception" }
-            throw exception
-        }
 
     fun launchCoroutine(block: suspend CoroutineScope.() -> Unit): Job =
         viewModelScope.launch(context = handler + dispatcherProvider.main(), block = block)

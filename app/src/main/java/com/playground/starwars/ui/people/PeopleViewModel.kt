@@ -13,13 +13,10 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.*
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class PeopleViewModel(
-    application: Application,
     starWars: StarWarsService,
     dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider()
-) : StarWarsViewModel(application, dispatcherProvider) {
+) : StarWarsViewModel(dispatcherProvider) {
 
     private val isLoadingRelay = BroadcastChannel<Boolean>(1)
 

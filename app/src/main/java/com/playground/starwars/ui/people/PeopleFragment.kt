@@ -9,17 +9,11 @@ import com.playground.starwars.pushFragment
 import com.playground.starwars.ui.person.PersonFragment
 import com.playground.starwars.ui.person.bind
 import kotlinx.android.synthetic.main.fragment_people.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-@InternalCoroutinesApi
 class PeopleFragment : Fragment(R.layout.fragment_people) {
 
-    private val adapter = SimpleAdapter {
+    private val adapter = PageLoadingAdapter {
         parentFragmentManager.pushFragment(PersonFragment.newInstance(it))
     }
 

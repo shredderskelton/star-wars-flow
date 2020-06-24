@@ -36,11 +36,12 @@ class HttpStarWarsService(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun getPerson(id: Int): Flow<Result<Person>> = flow {
-        logDebug { "getPerson: $id" }
-        delay(DELAY)
-        emit(starWarsApi.getPerson(id).dataOrError())
-    }.flowOn(Dispatchers.IO)
+    override fun getPerson(id: Int): Flow<Result<Person>> =
+        flow {
+            logDebug { "getPerson: $id" }
+            delay(DELAY)
+            emit(starWarsApi.getPerson(id).dataOrError())
+        }.flowOn(Dispatchers.IO)
 
     private fun <T : Any> Response<T>.dataOrError(): Result<T> =
         if (isSuccessful) {
