@@ -58,8 +58,7 @@ class PersonViewModelThree(
         }
 
     private fun filmsFlow(person: Person): Flow<String> =
-        person.filmIds
-            .asFlow()
+        person.filmIds.asFlow()
             .flatMapMerge { filmId ->
                 starWars.getFilm(filmId)
                     .map { filmResult ->
@@ -96,7 +95,7 @@ class PersonViewModelThree(
             }
             .map { entry ->
                 entry.map { it.value }
-                    .scanReduce { acc, s -> "$acc, $s" }
+                    .runningReduce { acc, s -> "$acc, $s" }
                     .lastOrNull()
             }
             .mapNotNull { it }

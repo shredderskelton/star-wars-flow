@@ -7,7 +7,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.playground.starwars.R
-import kotlinx.android.synthetic.main.layout_simple_item.view.*
+import com.playground.starwars.databinding.LayoutLoadingItemBinding
+import com.playground.starwars.databinding.LayoutSimpleItemBinding
 
 private const val NORMAL = 1
 private const val LOADING = 2
@@ -35,11 +36,11 @@ class PageLoadingAdapter(private val onItemClicked: (Int) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
         return when (viewType) {
             NORMAL -> SimpleViewHolder.NormalViewHolder(
-                parent.inflate(R.layout.layout_simple_item),
+                LayoutSimpleItemBinding.inflate(LayoutInflater.from(parent.context)),
                 onItemClicked
             )
             LOADING -> SimpleViewHolder.LoadingViewHolder(
-                parent.inflate(R.layout.layout_loading_item)
+                LayoutLoadingItemBinding.inflate(LayoutInflater.from(parent.context)).root
             )
             else -> error("Unknown view type")
         }
@@ -56,14 +57,17 @@ class PageLoadingAdapter(private val onItemClicked: (Int) -> Unit) :
     override fun getItemViewType(position: Int) = if (position == items.size) LOADING else NORMAL
 
     sealed class SimpleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class NormalViewHolder(view: View, private val onItemClicked: (Int) -> Unit) :
-            SimpleViewHolder(view) {
+        class NormalViewHolder(
+            private val binding: LayoutSimpleItemBinding,
+            private val onItemClicked: (Int) -> Unit
+        ) :
+            SimpleViewHolder(binding.root) {
 
             fun bind(item: SimpleListItem) {
-                with(itemView) {
+                with(binding) {
                     title.text = item.title
                     subTitle.text = item.subtitle
-                    setOnClickListener { onItemClicked(item.id) }
+                    root.setOnClickListener { onItemClicked(item.id) }
                 }
             }
         }
@@ -71,9 +75,6 @@ class PageLoadingAdapter(private val onItemClicked: (Int) -> Unit) :
         class LoadingViewHolder(view: View) : SimpleViewHolder(view)
     }
 }
-
-fun ViewGroup.inflate(@LayoutRes layout: Int): View =
-    LayoutInflater.from(context).inflate(layout, this, false)
 
 private class DiffCallback<T>(
     private val old: List<T>,
