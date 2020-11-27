@@ -5,6 +5,7 @@ import com.playground.starwars.model.Person
 import com.playground.starwars.model.bmi
 import com.playground.starwars.service.Result
 import com.playground.starwars.service.StarWarsService
+import com.playground.starwars.ui.CoroutineViewModel
 import com.playground.starwars.ui.DefaultDispatcherProvider
 import com.playground.starwars.ui.DispatcherProvider
 import kotlinx.coroutines.FlowPreview
@@ -14,8 +15,7 @@ import kotlinx.coroutines.flow.*
 class PersonViewModelOne(
     starWarsService: StarWarsService,
     personId: Int,
-    dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider()
-) : PersonViewModel(dispatcherProvider) {
+) : PersonViewModel() {
 
     // Task 1
     private val person: Flow<Person> =
@@ -26,8 +26,11 @@ class PersonViewModelOne(
                     is Result.Error -> null
                 }
             }
-            .broadcastIn(viewModelScope)
-            .asFlow()
+            .shareIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(0, 0),
+                replay = 1
+            )
 
     override val name: Flow<String> = person.map { it.name }
     override val height: Flow<String> = person.map { "Height: ${it.height}" }
@@ -35,18 +38,7 @@ class PersonViewModelOne(
 
     override val bmi: Flow<String> = person.map { "BMI: ${it.bmi}" }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    // Future tasks
 
     override val isLoadingVisible: Flow<Boolean> = flowOf(false)
     override val isErrorVisible: Flow<Boolean> = flowOf(false)
@@ -57,5 +49,5 @@ class PersonViewModelOne(
     override val planetGravity: Flow<String> = flowOf("")
     override val planetPopulation: Flow<String> = flowOf("")
     override val films: Flow<String> = flowOf("")
-    override fun refresh()  = Unit
+    override fun refresh() = Unit
 }

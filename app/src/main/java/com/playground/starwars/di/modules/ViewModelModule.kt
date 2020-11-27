@@ -13,7 +13,7 @@ import org.koin.dsl.module
 @ExperimentalStdlibApi
 val viewModelModule = module {
     viewModel { PeopleViewModel(get()) }
-    viewModel<PersonViewModel> { (personId: Int) -> PersonViewModelOne(get(), personId) }
+//    viewModel<PersonViewModel> { (personId: Int) -> PersonViewModelOne(get(), personId) }
 //    viewModel<PersonViewModel> { (personId: Int) -> PersonViewModelTwo(get(), personId) }
-//    viewModel<PersonViewModel>{ (personId: Int) -> PersonViewModelThree(get(), personId) }
+    viewModel<PersonViewModel>{ (personId: Int) -> PersonViewModelThree(get(), personId) }
 }

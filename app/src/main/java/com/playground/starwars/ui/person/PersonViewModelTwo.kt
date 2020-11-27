@@ -7,6 +7,7 @@ import com.playground.starwars.model.bmi
 import com.playground.starwars.model.planetId
 import com.playground.starwars.service.Result
 import com.playground.starwars.service.StarWarsService
+import com.playground.starwars.ui.CoroutineViewModel
 import com.playground.starwars.ui.DefaultDispatcherProvider
 import com.playground.starwars.ui.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,8 +19,7 @@ import kotlinx.coroutines.flow.*
 class PersonViewModelTwo(
     private val starWars: StarWarsService,
     personId: Int,
-    dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider()
-) : PersonViewModel(dispatcherProvider) {
+) : PersonViewModel() {
 
     //Task 2
 
@@ -36,9 +36,11 @@ class PersonViewModelTwo(
                     is Result.Error -> flowOf(State())
                 }
             }
-            .broadcastIn(viewModelScope)
-            .asFlow()
-
+            .shareIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(0, 0),
+                replay = 1
+            )
 
     private fun getPlanet(person: Person): Flow<State> =
         starWars.getPlanet(person.planetId).map { planetResult ->
@@ -47,12 +49,6 @@ class PersonViewModelTwo(
                 is Result.Error -> State(person, null)
             }
         }
-
-
-
-
-
-
 
 
     private val person: Flow<Person> = state.mapNotNull { it.person }
@@ -69,18 +65,6 @@ class PersonViewModelTwo(
     override val planetClimate: Flow<String> = planet.map { "Climate: ${it.climate}" }
     override val planetGravity: Flow<String> = planet.map { "Gravity: ${it.gravity}" }
     override val planetPopulation: Flow<String> = planet.map { "Population: ${it.population}" }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // TODO in next task(s)

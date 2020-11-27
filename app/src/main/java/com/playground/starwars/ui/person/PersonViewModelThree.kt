@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.playground.starwars.model.*
 import com.playground.starwars.service.Result
 import com.playground.starwars.service.StarWarsService
+import com.playground.starwars.ui.CoroutineViewModel
 import com.playground.starwars.ui.DefaultDispatcherProvider
 import com.playground.starwars.ui.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,17 +18,13 @@ import kotlinx.coroutines.flow.*
 class PersonViewModelThree(
     private val starWars: StarWarsService,
     personId: Int,
-    dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider()
-) : PersonViewModel(dispatcherProvider) {
+) : PersonViewModel() {
 
-    private val triggerRelay =
-        BroadcastChannel<Long>(1)
-
-    private val trigger = triggerRelay.asFlow()
+    private val trigger = MutableSharedFlow<Long>(1)
 
     // Task 3
-    private val state =
-        trigger.flatMapLatest {
+    private val state = trigger
+        .flatMapLatest {
             starWars.getPerson(personId)
                 .flatMapConcat { personResult ->
                     when (personResult) {
@@ -39,8 +36,11 @@ class PersonViewModelThree(
                 }
                 .onStart { emit(State(isLoading = true)) }
         }
-            .broadcastIn(viewModelScope)
-            .asFlow()
+        .shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(0, 0),
+            replay = 1
+        )
 
     private fun personDetailsFlow(person: Person): Flow<State> =
         combine(
@@ -69,7 +69,7 @@ class PersonViewModelThree(
                     }
             }
             .mapNotNull { it }
-            .scanReduce { acc, it -> "$acc, $it" }
+            .runningReduce { acc, it -> "$acc, $it" }
             .onStart { emit("Loading") }
 
     // Task 3 Bonus Time
@@ -102,14 +102,8 @@ class PersonViewModelThree(
             .onStart { emit("Loading") }
 
     override fun refresh() {
-        launchCoroutine {
-            triggerRelay.send(System.currentTimeMillis())
-        }
+        trigger.tryEmit(System.currentTimeMillis())
     }
-
-
-
-
 
 
     private val person: Flow<Person> = state.mapNotNull { it.person }
@@ -117,7 +111,8 @@ class PersonViewModelThree(
 
     override val isLoadingVisible: Flow<Boolean> = state.map { it.isLoading }
     override val isErrorVisible: Flow<Boolean> = state.map { it.isError }
-    override val isDataContainerVisible: Flow<Boolean> = state.map { !it.isError && it.person != null }
+    override val isDataContainerVisible: Flow<Boolean> =
+        state.map { !it.isError && it.person != null }
     override val name: Flow<String> = person.map { it.name }
     override val height: Flow<String> = person.map { "Height: ${it.height}" }
     override val birthday: Flow<String> = person.map { "DoB: ${it.birth_year}" }

@@ -22,7 +22,7 @@ val apiModule = module {
         Cache(androidContext().cacheDir, cacheSize.toLong())
     }
     single {
-        val client = OkHttpClient.Builder().cache(get())
+        val client = OkHttpClient.Builder()//.cache(get())
         client.addInterceptor {
             it.proceed(
                 it.request().newBuilder().addHeader("Content-Type", "application/json").build()
@@ -50,7 +50,7 @@ val apiModule = module {
             .build()
     }
 
-//    single<StarWarsApi> { get<Retrofit>().create(StarWarsApi::class.java) }
-    single<StarWarsApi> { FakeStarWarsApi() }
-    factory<StarWarsService> { HttpStarWarsService(get()) }
+    single<StarWarsApi> { get<Retrofit>().create(StarWarsApi::class.java) }
+//    single<StarWarsApi> { FakeStarWarsApi() }
+    single<StarWarsService> { HttpStarWarsService(get()) }
 }

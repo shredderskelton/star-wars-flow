@@ -1,19 +1,13 @@
 package com.playground.starwars.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.playground.starwars.service.Loggable
-import com.playground.starwars.service.logDebug
 import com.playground.starwars.ui.person.handler
 import kotlinx.coroutines.*
 
-open class StarWarsViewModel(private val dispatcherProvider: DispatcherProvider) : ViewModel(),
-    Loggable {
+interface CoroutineViewModel {
+    val dispatcherProvider: DispatcherProvider
 
-    fun launchCoroutine(block: suspend CoroutineScope.() -> Unit): Job =
-        viewModelScope.launch(context = handler + dispatcherProvider.main(), block = block)
+    fun CoroutineScope.launchCoroutine(block: suspend CoroutineScope.() -> Unit): Job =
+        launch(context = handler + dispatcherProvider.main(), block = block)
 }
 
 interface DispatcherProvider {

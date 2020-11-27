@@ -13,32 +13,33 @@ import retrofit2.Response
 
 private const val DELAY = 2000L
 
-class HttpStarWarsService(
-    private val starWarsApi: StarWarsApi
-) : StarWarsService, Loggable {
+class HttpStarWarsService(private val starWarsApi: StarWarsApi) : StarWarsService, Loggable {
 
-    override fun getPeople(): Flow<Result<List<Person>>> = flow {
-        var page = 1
-        var cont = true
-        emit(Result.Success(emptyList()))
-        while (cont) {
-            logDebug { "getAll - page: $page" }
-            delay(1000)
-            val response = starWarsApi.getPeople(page)
-            if (response.isSuccessful) {
-                val data = response.body()
-                if (data != null) {
-                    emit(Result.Success(data.results))
-                    cont = data.next != null
-                    page++
+    private var requestCount = 0
+
+    override fun getPeople(): Flow<Result<List<Person>>> =
+        flow {
+            var page = 1
+            var cont = true
+            emit(Result.Success(emptyList()))
+            while (cont) {
+                logDebug { "getAll - page: $page" }
+                delay(1000)
+                val response = starWarsApi.getPeople(page)
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    if (data != null) {
+                        emit(Result.Success(data.results))
+                        cont = data.next != null
+                        page++
+                    }
                 }
             }
-        }
-    }.flowOn(Dispatchers.IO)
+        }.flowOn(Dispatchers.IO)
 
     override fun getPerson(id: Int): Flow<Result<Person>> =
         flow {
-            logDebug { "getPerson: $id" }
+            logDebug { "${requestCount++}: getPerson: $id " }
             delay(DELAY)
             emit(starWarsApi.getPerson(id).dataOrError())
         }.flowOn(Dispatchers.IO)
