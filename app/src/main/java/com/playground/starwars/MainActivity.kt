@@ -9,9 +9,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 
-@ExperimentalCoroutinesApi
+
 @InternalCoroutinesApi
-@FlowPreview
+
 class MainActivity : AppCompatActivity() {
 
 

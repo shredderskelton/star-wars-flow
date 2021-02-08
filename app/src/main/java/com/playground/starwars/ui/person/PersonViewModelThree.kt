@@ -4,17 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.playground.starwars.model.*
 import com.playground.starwars.service.Result
 import com.playground.starwars.service.StarWarsService
-import com.playground.starwars.ui.CoroutineViewModel
-import com.playground.starwars.ui.DefaultDispatcherProvider
-import com.playground.starwars.ui.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.BroadcastChannel
+import com.playground.starwars.ui.share
 import kotlinx.coroutines.flow.*
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-@ExperimentalStdlibApi
+
 class PersonViewModelThree(
     private val starWars: StarWarsService,
     personId: Int,
@@ -23,7 +16,7 @@ class PersonViewModelThree(
     private val trigger = MutableSharedFlow<Long>(1)
 
     // Task 3
-    private val state = trigger
+    private val state: SharedFlow<State> = trigger
         .flatMapLatest {
             starWars.getPerson(personId)
                 .flatMapConcat { personResult ->
@@ -36,16 +29,13 @@ class PersonViewModelThree(
                 }
                 .onStart { emit(State(isLoading = true)) }
         }
-        .shareIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(0, 0),
-            replay = 1
-        )
+        .share(viewModelScope)
 
     private fun personDetailsFlow(person: Person): Flow<State> =
         combine(
             starWars.getPlanet(person.planetId),
-            filmsFlow_scan(person)
+//            noProgressFilmsFlow(person)
+            progressFilmsFlow(person)
         ) { planetResult, films ->
             when (planetResult) {
                 is Result.Success ->
@@ -57,7 +47,7 @@ class PersonViewModelThree(
             emit(State(person = person, isLoading = true))
         }
 
-    private fun filmsFlow(person: Person): Flow<String> =
+    private fun noProgressFilmsFlow(person: Person): Flow<String> =
         person.filmIds.asFlow()
             .flatMapMerge { filmId ->
                 starWars.getFilm(filmId)
@@ -74,16 +64,14 @@ class PersonViewModelThree(
 
     // Task 3 Bonus Time
 
-    @ExperimentalStdlibApi
-    private fun filmsFlow_scan(person: Person): Flow<String> =
-        person.filmIds
-            .asFlow()
+    private fun progressFilmsFlow(person: Person): Flow<String> =
+        person.filmIds.asFlow()
             .flatMapMerge { filmId ->
                 starWars.getFilm(filmId)
                     .map { filmResult ->
                         val result: Pair<Int, String> = when (filmResult) {
                             is Result.Success -> filmId to filmResult.data.toFilmString()
-                            is Result.Error -> filmId to "\nError loading Film ID: $filmId"
+                            is Result.Error -> filmId to "\nUnable to load this film... ($filmId)"
                         }
                         result
                     }

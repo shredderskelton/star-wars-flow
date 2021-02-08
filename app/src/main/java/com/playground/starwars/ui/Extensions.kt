@@ -1,13 +1,21 @@
 package com.playground.starwars.ui
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 
-public fun <T> Flow<T>.share(scope: CoroutineScope) =
+fun <T> Flow<T>.share(scope: CoroutineScope) =
     shareIn(
         scope = scope,
-        started = SharingStarted.WhileSubscribed(0, 0),
+        started = SharingStarted.WhileSubscribed(),
         replay = 1
     )
+
+
+private const val DELAY = 2000L
+
+suspend fun simulateDelay() {
+    delay(DELAY)
+}

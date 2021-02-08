@@ -5,13 +5,13 @@ import com.playground.starwars.model.Person
 import com.playground.starwars.model.bmi
 import com.playground.starwars.service.Result
 import com.playground.starwars.service.StarWarsService
-import com.playground.starwars.ui.CoroutineViewModel
-import com.playground.starwars.ui.DefaultDispatcherProvider
-import com.playground.starwars.ui.DispatcherProvider
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import com.playground.starwars.ui.share
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
-@FlowPreview
+
 class PersonViewModelOne(
     starWarsService: StarWarsService,
     personId: Int,
@@ -26,11 +26,7 @@ class PersonViewModelOne(
                     is Result.Error -> null
                 }
             }
-            .shareIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(0, 0),
-                replay = 1
-            )
+            .share(viewModelScope)
 
     override val name: Flow<String> = person.map { it.name }
     override val height: Flow<String> = person.map { "Height: ${it.height}" }

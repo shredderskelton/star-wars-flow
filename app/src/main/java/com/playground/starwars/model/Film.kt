@@ -1,12 +1,13 @@
 package com.playground.starwars.model
 
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Film(
     val url: String,
     val title: String,
     val release_date: String
-) : Serializable
+)
 
 val Film.id
     get() = url

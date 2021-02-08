@@ -10,12 +10,13 @@ import com.playground.starwars.service.StarWarsService
 import com.playground.starwars.ui.CoroutineViewModel
 import com.playground.starwars.ui.DefaultDispatcherProvider
 import com.playground.starwars.ui.DispatcherProvider
+import com.playground.starwars.ui.share
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
+
 class PersonViewModelTwo(
     private val starWars: StarWarsService,
     personId: Int,
@@ -36,11 +37,7 @@ class PersonViewModelTwo(
                     is Result.Error -> flowOf(State())
                 }
             }
-            .shareIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(0, 0),
-                replay = 1
-            )
+            .share(viewModelScope)
 
     private fun getPlanet(person: Person): Flow<State> =
         starWars.getPlanet(person.planetId).map { planetResult ->
@@ -73,6 +70,4 @@ class PersonViewModelTwo(
     override val isLoadingVisible: Flow<Boolean> = flowOf(false)
     override val isErrorVisible: Flow<Boolean> = flowOf(false)
     override val isDataContainerVisible: Flow<Boolean> = flowOf(true)
-
-
 }

@@ -4,14 +4,12 @@ import com.playground.starwars.model.Film
 import com.playground.starwars.model.Person
 import com.playground.starwars.model.Planet
 import com.playground.starwars.service.api.StarWarsApi
+import com.playground.starwars.ui.simulateDelay
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
-
-private const val DELAY = 2000L
 
 class HttpStarWarsService(private val starWarsApi: StarWarsApi) : StarWarsService, Loggable {
 
@@ -24,7 +22,7 @@ class HttpStarWarsService(private val starWarsApi: StarWarsApi) : StarWarsServic
             emit(Result.Success(emptyList()))
             while (cont) {
                 logDebug { "getAll - page: $page" }
-                delay(1000)
+                simulateDelay()
                 val response = starWarsApi.getPeople(page)
                 if (response.isSuccessful) {
                     val data = response.body()
@@ -40,7 +38,7 @@ class HttpStarWarsService(private val starWarsApi: StarWarsApi) : StarWarsServic
     override fun getPerson(id: Int): Flow<Result<Person>> =
         flow {
             logDebug { "${requestCount++}: getPerson: $id " }
-            delay(DELAY)
+            simulateDelay()
             emit(starWarsApi.getPerson(id).dataOrError())
         }.flowOn(Dispatchers.IO)
 
@@ -53,13 +51,13 @@ class HttpStarWarsService(private val starWarsApi: StarWarsApi) : StarWarsServic
 
     override fun getPlanet(id: Int): Flow<Result<Planet>> = flow {
         logDebug { "getPlanet: $id" }
-        delay(DELAY)
+        simulateDelay()
         emit(starWarsApi.getPlanet(id).dataOrError())
     }.flowOn(Dispatchers.IO)
 
     override fun getFilm(id: Int): Flow<Result<Film>> = flow {
         logDebug { "getFilm: $id" }
-        delay(DELAY)
+        simulateDelay()
         emit(starWarsApi.getFilm(id).dataOrError())
     }.flowOn(Dispatchers.IO)
 

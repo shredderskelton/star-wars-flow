@@ -1,7 +1,8 @@
 package com.playground.starwars.model
 
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Person(
     val name: String,
     val height: String,
@@ -11,7 +12,7 @@ data class Person(
     val homeworld: String,
     val birth_year: String,
     val films: List<String>
-) : Serializable
+)
 
 val Person.planetId
     get() = homeworld

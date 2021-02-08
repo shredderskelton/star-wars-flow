@@ -10,7 +10,7 @@ import kotlinx.coroutines.FlowPreview
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-@ExperimentalStdlibApi
+
 val viewModelModule = module {
     viewModel { PeopleViewModel(get()) }
 //    viewModel<PersonViewModel> { (personId: Int) -> PersonViewModelOne(get(), personId) }

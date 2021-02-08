@@ -2,18 +2,20 @@ package com.playground.starwars.di.modules
 
 import android.content.Context
 import android.net.wifi.WifiManager
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.playground.starwars.service.HttpStarWarsService
-import com.playground.starwars.service.api.FakeStarWarsApi
 import com.playground.starwars.service.StarWarsService
+import com.playground.starwars.service.api.FakeStarWarsApi
 import com.playground.starwars.service.api.StarWarsApi
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.serialization.json.Json
 import okhttp3.Cache
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+
+private const val useNetwork = false
 
 val apiModule = module {
     factory { androidContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager }
@@ -37,20 +39,27 @@ val apiModule = module {
         client.build()
     }
     single {
+        val contentType = "application/json".toMediaType()
+
         Retrofit.Builder()
             .baseUrl("https://swapi.dev")
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    Moshi.Builder()
-                        .add(KotlinJsonAdapterFactory())
-                        .build()
-                )
-            )
+            .addConverterFactory(json.asConverterFactory(contentType))
             .client(get())
             .build()
     }
 
-    single<StarWarsApi> { get<Retrofit>().create(StarWarsApi::class.java) }
-//    single<StarWarsApi> { FakeStarWarsApi() }
+    single<StarWarsApi> {
+        if (useNetwork) get<Retrofit>().create(StarWarsApi::class.java)
+        else FakeStarWarsApi()
+    }
     single<StarWarsService> { HttpStarWarsService(get()) }
+}
+
+/**
+ * Kotlin serializer
+ */
+private val json = Json {
+    encodeDefaults = true
+    ignoreUnknownKeys = true
+    isLenient = true
 }
