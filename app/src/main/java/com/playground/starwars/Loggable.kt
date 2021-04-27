@@ -1,4 +1,4 @@
-package com.playground.starwars.service
+package com.playground.starwars
 
 import android.util.Log
 

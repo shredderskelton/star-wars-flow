@@ -5,23 +5,19 @@ import com.playground.starwars.model.Person
 import com.playground.starwars.model.Planet
 import com.playground.starwars.model.bmi
 import com.playground.starwars.model.planetId
-import com.playground.starwars.service.Result
-import com.playground.starwars.service.StarWarsService
-import com.playground.starwars.ui.CoroutineViewModel
+import com.playground.starwars.datasource.Result
+import com.playground.starwars.datasource.StarWarsDataSource
 import com.playground.starwars.ui.DefaultDispatcherProvider
 import com.playground.starwars.ui.DispatcherProvider
 import com.playground.starwars.ui.share
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
 
-
 class PersonViewModelTwo(
-    private val starWars: StarWarsService,
+    private val starWars: StarWarsDataSource,
     personId: Int,
 ) : PersonViewModel() {
-
     //Task 2
 
     private data class State(

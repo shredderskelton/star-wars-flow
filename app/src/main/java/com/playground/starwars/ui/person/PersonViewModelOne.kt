@@ -3,8 +3,8 @@ package com.playground.starwars.ui.person
 import androidx.lifecycle.viewModelScope
 import com.playground.starwars.model.Person
 import com.playground.starwars.model.bmi
-import com.playground.starwars.service.Result
-import com.playground.starwars.service.StarWarsService
+import com.playground.starwars.datasource.Result
+import com.playground.starwars.datasource.StarWarsDataSource
 import com.playground.starwars.ui.share
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -13,13 +13,13 @@ import kotlinx.coroutines.flow.mapNotNull
 
 
 class PersonViewModelOne(
-    starWarsService: StarWarsService,
-    personId: Int,
+    private val starWarsDataSource: StarWarsDataSource,
+    private val personId: Int,
 ) : PersonViewModel() {
 
     // Task 1
     private val person: Flow<Person> =
-        starWarsService.getPerson(personId)
+        starWarsDataSource.getPerson(personId)
             .mapNotNull { personResult ->
                 when (personResult) {
                     is Result.Success -> personResult.data

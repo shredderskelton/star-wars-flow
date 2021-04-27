@@ -1,4 +1,4 @@
-package com.playground.starwars.service.api
+package com.playground.starwars.api
 
 import com.playground.starwars.model.PeopleResponse
 import com.playground.starwars.model.Film

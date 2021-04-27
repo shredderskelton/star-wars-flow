@@ -1,12 +1,8 @@
-package com.playground.starwars.di.modules
+package com.playground.starwars.api
 
 import android.content.Context
 import android.net.wifi.WifiManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.playground.starwars.service.HttpStarWarsService
-import com.playground.starwars.service.StarWarsService
-import com.playground.starwars.service.api.FakeStarWarsApi
-import com.playground.starwars.service.api.StarWarsApi
 import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.MediaType.Companion.toMediaType
@@ -52,7 +48,6 @@ val apiModule = module {
         if (useNetwork) get<Retrofit>().create(StarWarsApi::class.java)
         else FakeStarWarsApi()
     }
-    single<StarWarsService> { HttpStarWarsService(get()) }
 }
 
 /**

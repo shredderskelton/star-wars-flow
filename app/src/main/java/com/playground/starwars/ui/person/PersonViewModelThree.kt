@@ -2,14 +2,14 @@ package com.playground.starwars.ui.person
 
 import androidx.lifecycle.viewModelScope
 import com.playground.starwars.model.*
-import com.playground.starwars.service.Result
-import com.playground.starwars.service.StarWarsService
+import com.playground.starwars.datasource.Result
+import com.playground.starwars.datasource.StarWarsDataSource
 import com.playground.starwars.ui.share
 import kotlinx.coroutines.flow.*
 
 
 class PersonViewModelThree(
-    private val starWars: StarWarsService,
+    private val starWars: StarWarsDataSource,
     personId: Int,
 ) : PersonViewModel() {
 

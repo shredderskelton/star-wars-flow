@@ -1,4 +1,4 @@
-package com.playground.starwars.service.api
+package com.playground.starwars.api
 
 import com.playground.starwars.model.PeopleResponse
 import com.playground.starwars.model.Film
@@ -34,7 +34,7 @@ val dummyPlanet = Planet(
     gravity = "9.2",
     terrain = "Rocky",
     population = "19999",
-    url = ""
+    url = "http://swapi.dev/api/planets/2/"
 )
 
 val dummyFilm = Film("http://swapi.dev/api/films/1", "A New Hope", "1985")

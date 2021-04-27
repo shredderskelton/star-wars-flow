@@ -2,9 +2,9 @@ package com.playground.starwars.ui.people
 
 import app.cash.turbine.test
 import com.nhaarman.mockitokotlin2.mock
-import com.playground.starwars.service.Result
-import com.playground.starwars.service.StarWarsService
-import com.playground.starwars.service.api.dummyPerson
+import com.playground.starwars.api.dummyPerson
+import com.playground.starwars.datasource.Result
+import com.playground.starwars.datasource.StarWarsDataSource
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -18,7 +18,7 @@ class PeopleViewModelTest {
 
     private lateinit var underTest: PeopleViewModel
 
-    private val service = mock<StarWarsService> {
+    private val service = mock<StarWarsDataSource> {
         onBlocking { getPeople() }
             .then {
                 flow {
@@ -35,7 +35,7 @@ class PeopleViewModelTest {
     }
 
     @Test
-    fun `People items translated and updated correctly`() {
+    fun `People items flow into screen in the correct order`() {
         runBlocking {
             underTest.people.test {
                 assertEquals(listOf(lukeItem), expectItem())

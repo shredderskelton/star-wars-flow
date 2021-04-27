@@ -13,9 +13,3 @@ fun <T> Flow<T>.share(scope: CoroutineScope) =
         replay = 1
     )
 
-
-private const val DELAY = 2000L
-
-suspend fun simulateDelay() {
-    delay(DELAY)
-}
